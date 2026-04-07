@@ -48,3 +48,13 @@ body {
 section {
   position: relative;
 }
+
+/* Hide Next.js Development Indicators (the 'N' logo) */
+#nextjs-portal,
+.nextjs-static-indicator-container,
+[data-nextjs-toast-outer],
+[data-nextjs-toast-inner] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

@@ -28,7 +28,7 @@ const contactLinks = [
     icon: Mail,
     label: "Email",
     value: personalInfo.email,
-    href: `mailto:${personalInfo.email}`,
+    href: `https://mail.google.com/mail/?view=cm&fs=1&to=${personalInfo.email}`,
     isLucide: true,
   },
   {
@@ -123,7 +123,12 @@ export default function Contact() {
 
           <ScrollReveal delay={0.4}>
             <div className="text-center">
-              <AnimatedButton href={`mailto:${personalInfo.email}`} variant="primary" className="mx-auto">
+              <AnimatedButton 
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${personalInfo.email}`} 
+                target="_blank" 
+                variant="primary" 
+                className="mx-auto"
+              >
                 <Send size={16} />
                 Send Me an Email
               </AnimatedButton>

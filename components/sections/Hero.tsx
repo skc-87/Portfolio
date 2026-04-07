@@ -146,7 +146,11 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              <AnimatedButton href="#contact" variant="primary">
+              <AnimatedButton 
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${personalInfo.email}`} 
+                target="_blank" 
+                variant="primary"
+              >
                 <Mail size={16} />
                 Get in Touch
               </AnimatedButton>
