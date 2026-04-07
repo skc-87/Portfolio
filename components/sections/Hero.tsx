@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { personalInfo } from "@/lib/data";
@@ -26,43 +26,60 @@ function LinkedinIcon({ size = 18, className = "" }: { size?: number; className?
 }
 
 const TypewriterText = ({ texts }: { texts: string[] }) => {
-  const [text, setText] = useState("");
-  const [index, setIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [displayText, setDisplayText] = useState("");
+  const indexRef = useRef(0);
+  const phaseRef = useRef<"typing" | "pausing" | "deleting" | "waiting">("typing");
+  const charRef = useRef(0);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    const handleTyping = () => {
-      const fullText = texts[index];
-      
-      if (isDeleting) {
-        setText(fullText.substring(0, text.length - 1));
-      } else {
-        setText(fullText.substring(0, text.length + 1));
+    const tick = () => {
+      const fullText = texts[indexRef.current];
+
+      switch (phaseRef.current) {
+        case "typing":
+          charRef.current++;
+          setDisplayText(fullText.substring(0, charRef.current));
+          if (charRef.current >= fullText.length) {
+            phaseRef.current = "pausing";
+            timer = setTimeout(tick, 3000); // 3s pause after full word
+          } else {
+            timer = setTimeout(tick, 150); // typing speed
+          }
+          break;
+
+        case "pausing":
+          phaseRef.current = "deleting";
+          timer = setTimeout(tick, 100);
+          break;
+
+        case "deleting":
+          charRef.current--;
+          setDisplayText(fullText.substring(0, charRef.current));
+          if (charRef.current <= 0) {
+            phaseRef.current = "waiting";
+            timer = setTimeout(tick, 1000); // 1s pause before next word
+          } else {
+            timer = setTimeout(tick, 80); // deleting speed
+          }
+          break;
+
+        case "waiting":
+          indexRef.current = (indexRef.current + 1) % texts.length;
+          phaseRef.current = "typing";
+          timer = setTimeout(tick, 200);
+          break;
       }
-
-      let typeSpeed = isDeleting ? 30 : 80;
-
-      if (!isDeleting && text === fullText) {
-        typeSpeed = 2000; // Pause at end of word
-        setIsDeleting(true);
-      } else if (isDeleting && text === "") {
-        setIsDeleting(false);
-        setIndex((prev) => (prev + 1) % texts.length);
-        typeSpeed = 500; // Pause before next word
-      }
-
-      timer = setTimeout(handleTyping, typeSpeed);
     };
 
-    timer = setTimeout(handleTyping, 100);
+    timer = setTimeout(tick, 500);
     return () => clearTimeout(timer);
-  }, [text, isDeleting, index, texts]);
+  }, [texts]);
 
   return (
     <span className="text-violet-300">
-      {text}
+      {displayText}
       <span className="animate-[pulse_1s_ease-in-out_infinite] border-r-2 border-violet-400 ml-1 opacity-70" />
     </span>
   );
