@@ -43,7 +43,7 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
           setDisplayText(fullText.substring(0, charRef.current));
           if (charRef.current >= fullText.length) {
             phaseRef.current = "pausing";
-            timer = setTimeout(tick, 3000); // 3s pause after full word
+            timer = setTimeout(tick, 2000); // 3s pause after full word
           } else {
             timer = setTimeout(tick, 150); // typing speed
           }
@@ -163,9 +163,9 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              <AnimatedButton 
-                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${personalInfo.email}`} 
-                target="_blank" 
+              <AnimatedButton
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${personalInfo.email}`}
+                target="_blank"
                 variant="primary"
               >
                 <Mail size={16} />
